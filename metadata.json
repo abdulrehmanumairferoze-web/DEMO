@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Swiss Pharmaceuticals",
+  "description": "An enterprise-grade pharmaceutical management system featuring centralized scheduling, hierarchical task assignment, meeting minutes tracking, and role-based access control across all departments and teams.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
