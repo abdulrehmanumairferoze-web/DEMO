@@ -1,4 +1,3 @@
-
 import { Role, Department, Team, Region, User } from './types';
 
 export const DEPARTMENTS = Object.values(Department);
@@ -27,8 +26,8 @@ const generateDeptStaff = (dept: Department): User[] => {
   return [
     { 
       id: `${deptKey}_hod`, 
-      name: `${dept} Lead`, 
-      email: `${deptKey}.hod@pharma.com`, 
+      name: `${dept} Strategic Lead`, 
+      email: `${deptKey}.hod@directuspro.com`, 
       role: Role.HOD, 
       department: dept, 
       team: Team.None, 
@@ -36,8 +35,8 @@ const generateDeptStaff = (dept: Department): User[] => {
     },
     { 
       id: `${deptKey}_j1`, 
-      name: `${dept} Junior A`, 
-      email: `${deptKey}.j1@pharma.com`, 
+      name: `${dept} Associate Alpha`, 
+      email: `${deptKey}.j1@directuspro.com`, 
       role: Role.Junior, 
       department: dept, 
       team: Team.None, 
@@ -45,8 +44,8 @@ const generateDeptStaff = (dept: Department): User[] => {
     },
     { 
       id: `${deptKey}_j2`, 
-      name: `${dept} Junior B`, 
-      email: `${deptKey}.j2@pharma.com`, 
+      name: `${dept} Associate Beta`, 
+      email: `${deptKey}.j2@directuspro.com`, 
       role: Role.Junior, 
       department: dept, 
       team: Team.None, 
@@ -54,8 +53,8 @@ const generateDeptStaff = (dept: Department): User[] => {
     },
     { 
       id: `${deptKey}_j3`, 
-      name: `${dept} Junior C`, 
-      email: `${deptKey}.j3@pharma.com`, 
+      name: `${dept} Associate Gamma`, 
+      email: `${deptKey}.j3@directuspro.com`, 
       role: Role.Junior, 
       department: dept, 
       team: Team.None, 
@@ -66,11 +65,11 @@ const generateDeptStaff = (dept: Department): User[] => {
 
 export const MOCK_USERS: User[] = [
   // --- EXECUTIVE MANAGEMENT ---
-  { id: 'u100', name: 'Umair Feroze', email: 'chairman@pharma.com', role: Role.Chairman, department: Department.Executive, team: Team.None, region: Region.None },
-  { id: 'u1', name: 'Huzaifa Umair', email: 'ceo@pharma.com', role: Role.CEO, department: Department.Executive, team: Team.None, region: Region.None },
-  { id: 'u_coo', name: 'Imran', email: 'imran.coo@pharma.com', role: Role.COO, department: Department.Executive, team: Team.None, region: Region.None },
-  { id: 'u_md', name: 'Muhammad Naeem', email: 'naeem.md@pharma.com', role: Role.MD, department: Department.Executive, team: Team.None, region: Region.None },
-  { id: 'u_cfo', name: 'Agha Faisal', email: 'cfo@pharma.com', role: Role.CFO, department: Department.Executive, team: Team.None, region: Region.None },
+  { id: 'u100', name: 'Alexander Vane', email: 'chairman@directuspro.com', role: Role.Chairman, department: Department.Executive, team: Team.None, region: Region.None },
+  { id: 'u1', name: 'Julian Thorne', email: 'ceo@directuspro.com', role: Role.CEO, department: Department.Executive, team: Team.None, region: Region.None },
+  { id: 'u_coo', name: 'Marcus Sterling', email: 'coo@directuspro.com', role: Role.COO, department: Department.Executive, team: Team.None, region: Region.None },
+  { id: 'u_md', name: 'David Blackwell', email: 'md@directuspro.com', role: Role.MD, department: Department.Executive, team: Team.None, region: Region.None },
+  { id: 'u_cfo', name: 'Richard Vance', email: 'cfo@directuspro.com', role: Role.CFO, department: Department.Executive, team: Team.None, region: Region.None },
 
   // --- GENERATE STAFF FOR ALL DEPARTMENTS ---
   ...generateDeptStaff(Department.Finance),

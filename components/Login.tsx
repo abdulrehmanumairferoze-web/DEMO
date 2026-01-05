@@ -15,25 +15,20 @@ export const Login: React.FC<LoginProps> = ({ onLogin, branding }) => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [systemLogs, setSystemLogs] = useState<string[]>(['Initializing kernel...', 'Mounting secure storage...']);
-  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     const logPool = [
-      'Synchronizing node 04-A...',
-      'Validating E2E encryption...',
+      'Synchronizing global nodes...',
+      'Validating Directus Pro E2E encryption...',
       'Checking hardware integrity...',
-      'Fetching latest audit trail...',
-      'Handshake successful with DB-PROD...',
+      'Fetching master audit trail...',
+      'Handshake successful with PRO-CLOUD...',
       'Biometric module ready...',
     ];
     const logTimer = setInterval(() => {
       setSystemLogs(prev => [logPool[Math.floor(Math.random() * logPool.length)], ...prev].slice(0, 10));
     }, 4000);
-    return () => {
-      clearInterval(timer);
-      clearInterval(logTimer);
-    };
+    return () => clearInterval(logTimer);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -77,17 +72,17 @@ export const Login: React.FC<LoginProps> = ({ onLogin, branding }) => {
 
             <div className="space-y-2 mb-16">
               <h2 className="text-4xl lg:text-5xl font-black leading-tight tracking-tighter">
-                Enterprise<br />
+                Global<br />
                 Sovereign<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-indigo-400">Governance</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-indigo-400">Enterprise</span>
               </h2>
               <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-xs pt-4 border-t border-white/10 mt-6">
-                Official secure node for {branding.companyName}. End-to-end synchronization for global pharmaceutical operations.
+                Official secure gateway for {branding.companyName}. End-to-end synchronization for global operations.
               </p>
             </div>
 
             <div className="bg-black/40 rounded-3xl p-6 border border-white/5 font-mono text-[10px] space-y-2 overflow-hidden h-44 shadow-inner">
-              <div className="flex items-center gap-2 text-emerald-400 mb-2 border-b border-white/10 pb-2 uppercase font-black">Kernel_Stream_v6.0</div>
+              <div className="flex items-center gap-2 text-emerald-400 mb-2 border-b border-white/10 pb-2 uppercase font-black">Secure_Console_v1.2</div>
               {systemLogs.map((log, i) => (
                 <div key={i} className={`flex gap-3 transition-all duration-500 ${i === 0 ? 'text-white' : 'text-slate-500'}`}>
                   <span className="opacity-30">[{format(new Date(), 'HH:mm:ss')}]</span>
@@ -99,7 +94,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, branding }) => {
 
           <div className="pt-8 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
              <span>Link Secure // AES-256</span>
-             <span className="text-emerald-400">Station Active</span>
+             <span className="text-emerald-400">Station Online</span>
           </div>
         </div>
 
@@ -108,10 +103,10 @@ export const Login: React.FC<LoginProps> = ({ onLogin, branding }) => {
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-4">
                  <ShieldAlert size={20} className="text-emerald-400" />
-                 <h3 className="text-xs font-black text-emerald-400 uppercase tracking-[0.4em]">Identity Management</h3>
+                 <h3 className="text-xs font-black text-emerald-400 uppercase tracking-[0.4em]">Governance Entry</h3>
               </div>
-              <h2 className="text-3xl font-black text-white tracking-tight mb-3">Login to Console</h2>
-              <p className="text-slate-400 font-medium text-sm">Input credentials to establish encrypted session.</p>
+              <h2 className="text-3xl font-black text-white tracking-tight mb-3">Sovereign Login</h2>
+              <p className="text-slate-400 font-medium text-sm">Establish verified session node.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -119,12 +114,12 @@ export const Login: React.FC<LoginProps> = ({ onLogin, branding }) => {
               
               <div className="space-y-4">
                 <input 
-                  type="text" required placeholder="Employee ID (e.g., u100)"
+                  type="text" required placeholder="Personnel ID"
                   value={employeeId} onChange={e => setEmployeeId(e.target.value)}
                   className="w-full px-6 py-5 bg-white/[0.03] border border-white/10 rounded-3xl focus:ring-4 focus:ring-emerald-500/20 outline-none text-white font-bold"
                 />
                 <input 
-                  type="password" required placeholder="Security Key"
+                  type="password" required placeholder="Master Key"
                   value={password} onChange={e => setPassword(e.target.value)}
                   className="w-full px-6 py-5 bg-white/[0.03] border border-white/10 rounded-3xl focus:ring-4 focus:ring-emerald-500/20 outline-none text-white font-bold"
                 />
@@ -134,7 +129,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin, branding }) => {
                 type="submit" disabled={isSubmitting}
                 className="w-full py-6 bg-white text-black rounded-[32px] font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-slate-200 transition-all active:scale-95 shadow-2xl"
               >
-                {isSubmitting ? 'Verifying...' : 'Establish Session'}
+                {isSubmitting ? 'Authenticating...' : 'Enter Platform'}
               </button>
             </form>
           </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Meeting, User, Department } from '../types';
+import { Meeting, User, Department, SystemBranding } from '../types';
 import { MOCK_USERS, getDepartmentEmoji } from '../constants';
 import { format, isSameMonth, isValid } from 'date-fns';
 import { FileText, Clock, MapPin, ChevronDown, ChevronUp, Lock, Crown, ShieldCheck, Activity, Calendar as CalendarIcon, FileDown, Globe } from 'lucide-react';
@@ -7,6 +7,7 @@ import { FileText, Clock, MapPin, ChevronDown, ChevronUp, Lock, Crown, ShieldChe
 interface MeetingLogsProps {
   meetings: Meeting[];
   currentUser: User;
+  branding: SystemBranding;
 }
 
 interface MoMRow {
@@ -17,7 +18,7 @@ interface MoMRow {
   deadline: string;
 }
 
-export const MeetingLogs: React.FC<MeetingLogsProps> = ({ meetings, currentUser }) => {
+export const MeetingLogs: React.FC<MeetingLogsProps> = ({ meetings, currentUser, branding }) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const currentMonthMeetings = meetings.filter(m => 
@@ -69,8 +70,6 @@ export const MeetingLogs: React.FC<MeetingLogsProps> = ({ meetings, currentUser 
           </tbody>
         </table>
       `;
-    } else {
-      minutesHtml = `<div style="padding: 20px; font-size: 12px; color: #64748b; font-style: italic;">No refined deliberations recorded.</div>`;
     }
 
     printWindow.document.write(`
@@ -78,30 +77,24 @@ export const MeetingLogs: React.FC<MeetingLogsProps> = ({ meetings, currentUser 
         <head>
           <title>MoM - ${meeting.title}</title>
           <style>
-            body { font-family: 'Helvetica', 'Arial', sans-serif; color: #1e293b; padding: 40px; line-height: 1.6; position: relative; }
-            .header { border-bottom: 2px solid #10b981; padding-bottom: 20px; margin-bottom: 30px; }
+            body { font-family: 'Helvetica', 'Arial', sans-serif; color: #1e293b; padding: 40px; line-height: 1.6; }
+            .header { border-bottom: 2px solid ${branding.primaryColor}; padding-bottom: 20px; margin-bottom: 30px; }
             .title { font-size: 24px; font-weight: bold; text-transform: uppercase; margin: 0; }
             .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; color: #64748b; }
-            .section-title { font-size: 13px; font-weight: bold; text-transform: uppercase; color: #10b981; margin-top: 30px; border-left: 4px solid #10b981; padding-left: 10px; }
-            .auth-stamp { position: fixed; bottom: 40px; right: 40px; width: 100px; height: 100px; opacity: 0.15; transform: rotate(-15deg); z-index: 100; pointer-events: none; }
-            .official-seal { position: fixed; bottom: 120px; right: 60px; width: 120px; height: 120px; border: 4px solid #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ef4444; font-family: 'Courier New', Courier, monospace; font-weight: bold; opacity: 0.5; transform: rotate(-25deg); pointer-events: none; z-index: 101; text-align: center; }
-            .seal-inner { border: 2px solid #ef4444; border-radius: 50%; width: 100px; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-            .seal-text-top, .seal-text-bottom { font-size: 7px; text-transform: uppercase; }
-            .seal-main { font-size: 14px; border-top: 2px solid #ef4444; border-bottom: 2px solid #ef4444; margin: 2px 0; padding: 2px 5px; text-transform: uppercase; }
+            .section-title { font-size: 13px; font-weight: bold; text-transform: uppercase; color: ${branding.primaryColor}; margin-top: 30px; border-left: 4px solid ${branding.primaryColor}; padding-left: 10px; }
+            .seal { position: fixed; bottom: 120px; right: 60px; width: 120px; height: 120px; border: 4px solid #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ef4444; opacity: 0.5; transform: rotate(-25deg); text-align: center; }
           </style>
         </head>
         <body>
-          <div class="official-seal">
-            <div class="seal-inner">
-              <span class="seal-text-top">Swiss Pharma</span>
-              <span class="seal-main">Approved</span>
-              <span class="seal-text-bottom">Official Record</span>
+          <div class="seal">
+            <div style="border: 2px solid #ef4444; border-radius: 50%; width: 100px; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <span style="font-size: 7px; text-transform: uppercase;">Directus Pro</span>
+              <span style="font-size: 14px; border-top: 2px solid #ef4444; border-bottom: 2px solid #ef4444; margin: 2px 0; padding: 2px 5px; text-transform: uppercase;">Approved</span>
             </div>
           </div>
-          <img class="auth-stamp" src="https://raw.githubusercontent.com/StackBlitz/stackblitz-images/main/pharma-s-logo.png" alt="Auth Stamp" />
           <div class="header">
             <h1 class="title">Official Governance Record</h1>
-            <p style="margin: 5px 0; color: #10b981; font-weight: bold;">SWISS Pharmaceuticals (Pvt) Ltd</p>
+            <p style="margin: 5px 0; color: ${branding.primaryColor}; font-weight: bold;">${branding.companyName}</p>
             <div class="meta">
               <div><strong>Subject:</strong> ${meeting.title}</div>
               <div><strong>Date:</strong> ${safeFormat(meeting.startTime, 'PPP')}</div>
@@ -113,7 +106,7 @@ export const MeetingLogs: React.FC<MeetingLogsProps> = ({ meetings, currentUser 
           <p style="font-size: 11px;">${attendeesNames}</p>
           <div class="section-title">Deliberations & Resolutions</div>
           ${minutesHtml}
-          <div class="section-title">Digital Signatures</div>
+          <div class="section-title">Digital Verification</div>
           <p style="font-size: 10px; color: #64748b;">Authenticating Council: ${finalizedNames || 'Pending Verification'}</p>
         </body>
       </html>
@@ -157,29 +150,23 @@ export const MeetingLogs: React.FC<MeetingLogsProps> = ({ meetings, currentUser 
                 </tbody>
               </table>
             </div>
-
-            {(meeting.externalAttendees || []).length > 0 && (
-              <div className="bg-indigo-50/30 p-6 rounded-3xl border border-indigo-100/50 animate-in fade-in duration-500">
-                <div className="flex items-center gap-2 mb-4">
-                  <Globe size={16} className="text-indigo-500" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-indigo-700">External Collaborators</span>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {meeting.externalAttendees?.map((guest, i) => (
-                    <div key={i} className="bg-white px-4 py-2 rounded-xl border border-indigo-100 shadow-sm flex flex-col">
-                      <p className="text-[10px] font-black text-slate-900 leading-tight">{guest.name}</p>
-                      <p className="text-[8px] font-black text-emerald-500 uppercase tracking-tighter mt-0.5">{guest.designation}</p>
-                      <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">{guest.company}</p>
-                    </div>
-                  ))}
-                </div>
+            {meeting.attachments && meeting.attachments.length > 0 && (
+              <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 block">Session Attachments</span>
+                 <div className="flex flex-wrap gap-2">
+                    {meeting.attachments.map((att, i) => (
+                      <div key={i} className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl flex items-center gap-2 text-[9px] font-black uppercase text-slate-600">
+                         <FileText size={12} className="text-indigo-500" /> {att.name}
+                      </div>
+                    ))}
+                 </div>
               </div>
             )}
           </div>
         );
       }
     } catch (e) {}
-    return <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100 text-center text-slate-400 text-xs italic">No refined deliberations recorded.</div>;
+    return <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100 text-center text-slate-400 text-xs italic">No deliberations recorded.</div>;
   };
 
   return (
@@ -190,7 +177,7 @@ export const MeetingLogs: React.FC<MeetingLogsProps> = ({ meetings, currentUser 
         </div>
         <div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">Enterprise Activity Journal</h2>
-          <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mt-2">Governance Review: {format(new Date(), 'MMMM yyyy')}</p>
+          <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mt-2">Governance Review Cycle: {format(new Date(), 'MMMM yyyy')}</p>
         </div>
         <div className="text-right bg-slate-50 p-6 rounded-[32px] border border-slate-100 shadow-inner">
           <p className="text-5xl font-black text-emerald-600 tracking-tighter">{currentMonthMeetings.length}</p>

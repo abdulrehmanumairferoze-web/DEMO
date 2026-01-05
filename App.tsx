@@ -38,12 +38,13 @@ import {
   Boxes,
   LayoutTemplate,
   Pencil,
-  Settings
+  Settings,
+  Building2
 } from 'lucide-react';
 
 const DEFAULT_BRANDING: SystemBranding = {
-  companyName: 'SWISS',
-  companySubtitle: 'Pharmaceuticals',
+  companyName: 'DIRECTUS PRO',
+  companySubtitle: 'Sovereign Governance',
   primaryColor: '#10b981',
   logoBase64: 'https://raw.githubusercontent.com/StackBlitz/stackblitz-images/main/pharma-s-logo.png'
 };
@@ -57,18 +58,18 @@ const generateEnterpriseMeetings = (): Meeting[] => {
 
   const strategicDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0);
   meetings.push({
-    id: 'm-strat-naeem',
-    title: 'Q4 Export & Regional Expansion Strategy',
-    description: 'Critical board session to review target progress in Region 1, 2, and 3. Led by MD Muhammad Naeem.',
+    id: 'm-strat-blackwell',
+    title: 'Q4 Global Performance Review',
+    description: 'Strategic analysis of export milestones and regional compliance metrics. Led by Director David Blackwell.',
     startTime: strategicDate.toISOString(),
     endTime: addMinutes(strategicDate, 120).toISOString(),
-    location: 'Sovereign Boardroom - 4th Floor',
+    location: 'Executive Suite - Floor 12',
     department: Department.Executive,
     team: Team.None,
     region: Region.None,
     organizerId: 'u_md', 
     leaderId: 'u_md',
-    attendees: ['u_md', 'u1', 'u100', 's_hod_1', 'fin_hod'],
+    attendees: ['u_md', 'u1', 'u100'],
     finalizedBy: ['u_md', 'u1'],
     rejectedBy: {},
     minutes: `Session commenced at 10:00 AM.`,
@@ -82,7 +83,7 @@ const generateEnterpriseMeetings = (): Meeting[] => {
 };
 
 const INITIAL_TASKS: Task[] = [
-  { id: 't-naeem-1', title: 'Approve Region 3 Marketing Strategy', description: 'Review R3 collateral.', assignedToId: 'u_md', assignedById: 'u1', dueDate: format(addDays(new Date(), 2), 'yyyy-MM-dd'), status: TaskStatus.InProgress, priority: TaskPriority.Q1, createdAt: addDays(new Date(), -1).toISOString() }
+  { id: 't-blackwell-1', title: 'Approve Strategic Market Expansion', description: 'Review regional compliance data.', assignedToId: 'u_md', assignedById: 'u1', dueDate: format(addDays(new Date(), 2), 'yyyy-MM-dd'), status: TaskStatus.InProgress, priority: TaskPriority.Q1, createdAt: addDays(new Date(), -1).toISOString() }
 ];
 
 const App: React.FC = () => {
@@ -104,21 +105,20 @@ const App: React.FC = () => {
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
   const [isCustomCalendarModalOpen, setIsCustomCalendarModalOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<User | null>(null);
-  const [newDesignationName, setNewDesignationName] = useState('');
   const [selectedAssignee, setSelectedAssignee] = useState<User | undefined>();
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | undefined>();
   const [initialDate, setInitialDate] = useState<Date | undefined>();
 
   useEffect(() => {
-    const savedMeetings = localStorage.getItem('pharma_v6_meetings');
-    const savedTasks = localStorage.getItem('pharma_v6_tasks');
-    const savedLogs = localStorage.getItem('pharma_v6_logs');
-    const savedUser = localStorage.getItem('pharma_v6_user');
-    const savedNotifs = localStorage.getItem('pharma_v6_notifs');
-    const savedUsers = localStorage.getItem('pharma_v6_users_list');
-    const savedDesignations = localStorage.getItem('pharma_v6_designations');
-    const savedCustomCals = localStorage.getItem('pharma_v6_custom_calendars');
-    const savedBranding = localStorage.getItem('pharma_v6_branding');
+    const savedMeetings = localStorage.getItem('directus_v1_meetings');
+    const savedTasks = localStorage.getItem('directus_v1_tasks');
+    const savedLogs = localStorage.getItem('directus_v1_logs');
+    const savedUser = localStorage.getItem('directus_v1_user');
+    const savedNotifs = localStorage.getItem('directus_v1_notifs');
+    const savedUsers = localStorage.getItem('directus_v1_users_list');
+    const savedDesignations = localStorage.getItem('directus_v1_designations');
+    const savedCustomCals = localStorage.getItem('directus_v1_custom_calendars');
+    const savedBranding = localStorage.getItem('directus_v1_branding');
     
     if (savedMeetings) setMeetings(JSON.parse(savedMeetings));
     else setMeetings(generateEnterpriseMeetings());
@@ -135,23 +135,21 @@ const App: React.FC = () => {
     if (savedDesignations) setDesignations(JSON.parse(savedDesignations));
     if (savedCustomCals) setCustomCalendars(JSON.parse(savedCustomCals));
     if (savedBranding) setBranding(JSON.parse(savedBranding));
-
     if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
-    
     if (savedUser) setCurrentUser(JSON.parse(savedUser));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('pharma_v6_meetings', JSON.stringify(meetings));
-    localStorage.setItem('pharma_v6_tasks', JSON.stringify(tasks));
-    localStorage.setItem('pharma_v6_logs', JSON.stringify(auditLogs));
-    localStorage.setItem('pharma_v6_notifs', JSON.stringify(notifications));
-    localStorage.setItem('pharma_v6_users_list', JSON.stringify(users));
-    localStorage.setItem('pharma_v6_designations', JSON.stringify(designations));
-    localStorage.setItem('pharma_v6_custom_calendars', JSON.stringify(customCalendars));
-    localStorage.setItem('pharma_v6_branding', JSON.stringify(branding));
+    localStorage.setItem('directus_v1_meetings', JSON.stringify(meetings));
+    localStorage.setItem('directus_v1_tasks', JSON.stringify(tasks));
+    localStorage.setItem('directus_v1_logs', JSON.stringify(auditLogs));
+    localStorage.setItem('directus_v1_notifs', JSON.stringify(notifications));
+    localStorage.setItem('directus_v1_users_list', JSON.stringify(users));
+    localStorage.setItem('directus_v1_designations', JSON.stringify(designations));
+    localStorage.setItem('directus_v1_custom_calendars', JSON.stringify(customCalendars));
+    localStorage.setItem('directus_v1_branding', JSON.stringify(branding));
     if (currentUser) {
-      localStorage.setItem('pharma_v6_user', JSON.stringify(currentUser));
+      localStorage.setItem('directus_v1_user', JSON.stringify(currentUser));
     }
   }, [meetings, tasks, auditLogs, currentUser, notifications, users, designations, customCalendars, branding]);
 
@@ -191,7 +189,7 @@ const App: React.FC = () => {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('pharma_v6_user');
+    localStorage.removeItem('directus_v1_user');
     setActiveTab('dashboard');
   };
 
@@ -216,7 +214,8 @@ const App: React.FC = () => {
       isCustomRoom: meetingData.isCustomRoom || false,
       type: meetingData.type || MeetingType.Standard,
       recurrence: meetingData.recurrence || Recurrence.None,
-      isFinalized: meetingData.isFinalized || false
+      isFinalized: meetingData.isFinalized || false,
+      attachments: meetingData.attachments || []
     };
 
     if (selectedMeeting) {
@@ -229,7 +228,6 @@ const App: React.FC = () => {
     setSelectedMeeting(undefined);
   };
 
-  // Define handleSaveCustomCalendar to fix missing function error
   const handleSaveCustomCalendar = (calendarData: Partial<CustomCalendar>) => {
     const newCalendar: CustomCalendar = {
       id: calendarData.id!,
@@ -278,7 +276,7 @@ const App: React.FC = () => {
       }
       return [updatedEmployee, ...prev];
     });
-    addAuditLog(ActionType.PersonnelUpdate, `Chairman updated employee: ${updatedEmployee.name}`);
+    addAuditLog(ActionType.PersonnelUpdate, `Master Admin updated employee: ${updatedEmployee.name}`);
     setIsEmployeeModalOpen(false);
     setEditingEmployee(null);
   };
@@ -291,9 +289,9 @@ const App: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `swiss_system_export_${format(new Date(), 'yyyyMMdd_HHmm')}.json`;
+    link.download = `directuspro_export_${format(new Date(), 'yyyyMMdd_HHmm')}.json`;
     link.click();
-    addAuditLog(ActionType.DatabaseExported, 'Full system database exported to local file.');
+    addAuditLog(ActionType.DatabaseExported, 'Full system database exported.');
   };
 
   const handleImportSystem = (jsonData: string) => {
@@ -327,7 +325,6 @@ const App: React.FC = () => {
   const isExecutive = currentUser.role === Role.Chairman || currentUser.role === Role.CEO || currentUser.role === Role.COO || currentUser.role === Role.MD || currentUser.role === Role.CFO;
   const isChairman = currentUser.role === Role.Chairman;
   const canSeeAuditTrail = currentUser.role === Role.Chairman || currentUser.role === Role.CEO;
-  const currentCustomCalendar = customCalendars.find(c => c.id === activeTab);
 
   const stats = [
     { label: 'Manifest Load', value: tasks.filter(t => t.assignedToId === currentUser.id && t.status !== TaskStatus.Completed).length, icon: ClipboardList, color: 'text-emerald-600 bg-emerald-50' },
@@ -438,7 +435,31 @@ const App: React.FC = () => {
 
       {activeTab === 'calendar' && <CalendarView meetings={meetings.filter(m => m.attendees.includes(currentUser.id))} onAddMeeting={(date) => { setInitialDate(date); setIsModalOpen(true); }} onViewMeeting={(m) => { setSelectedMeeting(m); setIsModalOpen(true); }} />}
       {activeTab === 'exec-sync' && isExecutive && <CalendarView meetings={meetings.filter(m => m.department === Department.Executive)} onAddMeeting={(date) => { setInitialDate(date); setIsModalOpen(true); }} onViewMeeting={(m) => { setSelectedMeeting(m); setIsModalOpen(true); }} />}
-      {activeTab === 'dept-calendar' && <CalendarView meetings={meetings.filter(m => isExecutive ? (deptFilter === 'All' ? true : m.department === deptFilter) : m.department === currentUser.department)} onAddMeeting={(date) => { setInitialDate(date); setIsModalOpen(true); }} onViewMeeting={(m) => { setSelectedMeeting(m); setIsModalOpen(true); }} />}
+      
+      {activeTab === 'dept-calendar' && (
+        <div className="space-y-6">
+          <div className="bg-white p-6 rounded-[32px] border border-slate-100 flex items-center justify-between shadow-sm">
+             <div className="flex items-center gap-3">
+                <Building2 className="text-indigo-600" />
+                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Operational Sync Division</h3>
+             </div>
+             <select 
+               value={deptFilter} 
+               onChange={(e) => setDeptFilter(e.target.value as any)}
+               className="px-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest outline-none"
+             >
+               <option value="All">All Divisions</option>
+               {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+             </select>
+          </div>
+          <CalendarView 
+            meetings={meetings.filter(m => isExecutive ? (deptFilter === 'All' ? true : m.department === deptFilter) : m.department === currentUser.department)} 
+            onAddMeeting={(date) => { setInitialDate(date); setIsModalOpen(true); }} 
+            onViewMeeting={(m) => { setSelectedMeeting(m); setIsModalOpen(true); }} 
+          />
+        </div>
+      )}
+
       {activeTab === 'tasks' && <TaskBoard tasks={tasks} meetings={meetings} currentUser={currentUser} onStatusChange={updateTaskStatus} onDeleteTask={handleDeleteTask} onAddTask={() => setIsTaskModalOpen(true)} />}
       {activeTab === 'logs' && <MeetingLogs meetings={meetings} currentUser={currentUser} branding={branding} />}
       {activeTab === 'activity' && canSeeAuditTrail && <AuditTrail logs={auditLogs} tasks={tasks} meetings={meetings} />}

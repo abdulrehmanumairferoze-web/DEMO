@@ -28,7 +28,9 @@ import {
   Menu,
   Plus,
   LayoutList,
-  Settings
+  Settings,
+  BellRing,
+  Check
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -66,9 +68,10 @@ export const Layout: React.FC<LayoutProps> = ({
   const [showUserSwitcher, setShowUserSwitcher] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [showFabMenu, setShowFabMenu] = useState(false);
   
   const notificationRef = useRef<HTMLDivElement>(null);
+  const userSwitcherRef = useRef<HTMLDivElement>(null);
+
   const isExecutive = user.role === Role.Chairman || user.role === Role.CEO || user.role === Role.COO || user.role === Role.MD || user.role === Role.CFO;
   const isChairman = user.role === Role.Chairman;
   const canSeeAuditTrail = user.role === Role.Chairman || user.role === Role.CEO;
@@ -80,6 +83,9 @@ export const Layout: React.FC<LayoutProps> = ({
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
       }
+      if (userSwitcherRef.current && !userSwitcherRef.current.contains(event.target as Node)) {
+        setShowUserSwitcher(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -90,6 +96,12 @@ export const Layout: React.FC<LayoutProps> = ({
       onMarkNotificationsRead();
     }
     setShowNotifications(!showNotifications);
+    setShowUserSwitcher(false);
+  };
+
+  const handleToggleUserSwitcher = () => {
+    setShowUserSwitcher(!showUserSwitcher);
+    setShowNotifications(false);
   };
 
   const menuItems = [
@@ -190,16 +202,113 @@ export const Layout: React.FC<LayoutProps> = ({
           </div>
           
           <div className="flex items-center gap-2 lg:gap-4">
-            <button onClick={() => setShowUserSwitcher(!showUserSwitcher)} className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl hover:bg-slate-100 transition-all shadow-sm">
-              <UserCog size={16} className="text-slate-400" />
-              <ChevronDown size={14} className={`text-slate-400 transition-transform ${showUserSwitcher ? 'rotate-180' : ''}`} />
-            </button>
+            <div className="relative" ref={userSwitcherRef}>
+              <button 
+                onClick={handleToggleUserSwitcher} 
+                className={`flex items-center gap-2 px-4 py-2 border rounded-xl transition-all shadow-sm ${showUserSwitcher ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-50 border-slate-100 hover:bg-slate-100'}`}
+              >
+                <UserCog size={16} className={showUserSwitcher ? 'text-white' : 'text-slate-400'} />
+                <ChevronDown size={14} className={`transition-transform ${showUserSwitcher ? 'rotate-180 text-white' : 'text-slate-400'}`} />
+              </button>
+
+              {showUserSwitcher && (
+                <div className="absolute right-0 mt-4 w-72 bg-white rounded-[32px] shadow-2xl border border-slate-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-4 duration-200">
+                  <div className="p-5 border-b border-slate-50 bg-slate-50/50">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Personnel Override</p>
+                  </div>
+                  <div className="max-h-96 overflow-y-auto custom-scrollbar p-2">
+                    {MOCK_USERS.map((u) => (
+                      <button
+                        key={u.id}
+                        onClick={() => {
+                          onSwitchUser?.(u);
+                          setShowUserSwitcher(false);
+                        }}
+                        className={`w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-all ${user.id === u.id ? 'bg-emerald-50' : ''}`}
+                      >
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black shadow-sm ${user.id === u.id ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                          {u.name.charAt(0)}
+                        </div>
+                        <div className="text-left overflow-hidden">
+                          <p className="text-xs font-black text-slate-900 truncate">{u.name}</p>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight truncate">{u.role}</p>
+                        </div>
+                        {user.id === u.id && <Check size={14} className="ml-auto text-emerald-600" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             
             <div className="relative" ref={notificationRef}>
-              <button onClick={handleToggleNotifications} className="p-3 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-all relative">
+              <button onClick={handleToggleNotifications} className={`p-3 rounded-2xl transition-all relative ${showNotifications ? 'bg-slate-900 text-white' : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50'}`}>
                 <Bell size={20} />
                 {unreadCount > 0 && <span className="absolute top-2.5 right-2.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[8px] font-black text-white">{unreadCount}</span>}
               </button>
+
+              {showNotifications && (
+                <div className="absolute right-0 mt-4 w-96 bg-white rounded-[40px] shadow-2xl border border-slate-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-4 duration-300">
+                  <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+                    <div>
+                      <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">System Feed</h3>
+                      <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{notifications.length} Unresolved Alerts</p>
+                    </div>
+                    <BellRing size={16} className="text-emerald-600" />
+                  </div>
+                  <div className="max-h-[450px] overflow-y-auto custom-scrollbar">
+                    {notifications.length > 0 ? (
+                      <div className="divide-y divide-slate-50">
+                        {notifications.map((n) => (
+                          <div key={n.id} className={`p-6 hover:bg-slate-50 transition-colors relative group ${!n.read ? 'bg-emerald-50/30' : ''}`}>
+                            <div className="flex items-start gap-4">
+                              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
+                                n.type === NotificationType.Task ? 'bg-blue-100 text-blue-600' : 
+                                n.type === NotificationType.Meeting ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'
+                              }`}>
+                                {n.type === NotificationType.Task ? <CheckSquare size={18} /> : <Calendar size={18} />}
+                              </div>
+                              <div className="flex-1 overflow-hidden">
+                                <div className="flex items-center justify-between mb-1">
+                                  <h4 className="text-xs font-black text-slate-900 truncate pr-2">{n.title}</h4>
+                                  <span className="text-[8px] font-black text-slate-400 uppercase whitespace-nowrap">{format(new Date(n.timestamp), 'HH:mm')}</span>
+                                </div>
+                                <p className="text-[10px] text-slate-500 font-medium leading-relaxed">{n.message}</p>
+                              </div>
+                            </div>
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onClearNotification(n.id);
+                              }}
+                              className="absolute top-6 right-6 p-1.5 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-16 text-center">
+                        <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                          <ShieldCheck size={32} className="text-slate-200" />
+                        </div>
+                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">System Clear. No Active Alerts.</p>
+                      </div>
+                    )}
+                  </div>
+                  {notifications.length > 0 && (
+                    <div className="p-4 border-t border-slate-50 text-center">
+                      <button 
+                        onClick={() => setShowNotifications(false)}
+                        className="text-[10px] font-black text-slate-400 hover:text-emerald-600 uppercase tracking-[0.2em] transition-all"
+                      >
+                        Acknowledge All
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </header>
